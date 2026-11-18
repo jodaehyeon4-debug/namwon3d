@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>남원 3D 탐험지도</title>
+  <link rel="icon" href="data:," />
+  <script>window.CESIUM_BASE_URL = './cesium/';</script>
+  <script src="./config.local.js"></script>
+  <script type="module" crossorigin src="./assets/index-Cv_8p03_.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BsoYV6XX.css">
+</head>
+<body class="band-5-6">
+  <div id="map" aria-label="남원 3D 지도"></div>
+
+  <!-- 위 막대 -->
+  <header id="topbar">
+    <div class="brand"><strong>남원 3D 탐험지도</strong><span class="band-chip" title="학년 모드">5~6학년</span></div>
+    <div class="search">
+      <input id="search" type="search" placeholder="장소·아파트 단지·학교 이름" autocomplete="off" aria-label="장소 찾기" />
+      <ul id="search-results" role="listbox" hidden></ul>
+    </div>
+    <div class="actions">
+      <button id="btn-2d" class="tb" aria-pressed="false" title="위에서 본 지도처럼 보기">위에서 보기</button>
+      <button id="btn-where" class="tb" title="내 위치로 가기(위치 허용 필요, 저장하지 않음)">나는 어디?</button>
+      <button id="btn-evidence" class="tb primary" title="지금 화면을 증거로 저장">증거로 저장</button>
+      <button id="btn-present" class="tb" aria-pressed="false" title="교사 발표 보기">발표</button>
+      <button id="btn-sources" class="tb" title="자료 출처">출처</button>
+    </div>
+  </header>
+
+  <!-- 왼쪽: 레이어·북마크 -->
+  <aside id="left" class="panel">
+    <section>
+      <h2>장소 바로 가기</h2>
+      <div id="bookmarks" class="chips"></div>
+      <button id="btn-tour" class="small">비행 투어 ▶</button>
+    </section>
+    <section>
+      <h2>지도 레이어</h2>
+      <div id="layers"></div>
+    </section>
+    <section>
+      <h2>탐구 도구</h2>
+      <button id="btn-rain" class="tool" aria-pressed="false">빗방울 떨어뜨리기</button>
+      <button id="btn-place" class="tool" disabled title="1차-B에서 열려요">시설물 놓기 (준비 중)</button>
+      <p id="rain-help" class="hint" hidden>지도에서 아무 곳이나 누르면 빗방울이 땅의 기울기를 따라 흘러가요.</p>
+    </section>
+  </aside>
+
+  <!-- 오른쪽: 정보 카드 -->
+  <aside id="card" class="panel" hidden aria-live="polite"></aside>
+
+  <!-- 범례 -->
+  <div id="legend" class="panel small-panel"></div>
+
+  <!-- 아래: 탐구 서랍 -->
+  <section id="drawer" class="panel collapsed">
+    <div class="drawer-tabs" role="tablist">
+      <button role="tab" data-tab="questions" aria-selected="true">질문 벽</button>
+      <button role="tab" data-tab="lens">개념 렌즈</button>
+      <button role="tab" data-tab="evidence">증거 기록장 <span id="ev-count" class="count">0</span></button>
+      <button id="drawer-toggle" class="drawer-toggle" aria-label="서랍 열고 닫기">▲</button>
+    </div>
+    <div class="drawer-body">
+      <div data-pane="questions"></div>
+      <div data-pane="lens" hidden></div>
+      <div data-pane="evidence" hidden></div>
+    </div>
+  </section>
+
+  <!-- 미니맵·나침반 -->
+  <div id="minimap" class="panel small-panel" aria-label="미니맵"><svg id="minimap-svg"></svg></div>
+  <div id="compass" class="panel">
+    <button id="btn-north" title="북쪽을 위로">N</button>
+    <label class="lock"><input id="north-lock" type="checkbox" /> 북쪽 고정</label>
+  </div>
+
+  <!-- 상태 칩 -->
+  <div id="chips">
+    <span id="chip-stage" class="chip">① 개괄</span>
+    <span id="chip-imagery" class="chip muted">항공사진 꺼짐</span>
+  </div>
+  <div id="toast" role="status" hidden></div>
+  <div id="loading"><div class="spinner"></div><p id="loading-text">남원 지도를 펴는 중…</p></div>
+  <div id="debug" hidden></div>
+  <dialog id="modal"><div id="modal-body"></div><form method="dialog"><button class="close">닫기</button></form></dialog>
+</body>
+</html>

@@ -1,0 +1,73 @@
+{
+  "format": "namwon3d-f32-heightmap",
+  "version": "0.1",
+  "tiling": "geographic",
+  "bounds": [
+    127.04986111111111,
+    35.200138888888894,
+    127.79986111111111,
+    35.68013888888889
+  ],
+  "minLevel": 8,
+  "maxLevel": 13,
+  "tileSize": 65,
+  "heightOffset": 0.0,
+  "fillHeight": 7.0,
+  "minHeight": 7.0,
+  "maxHeight": 1904.15771484375,
+  "available": {
+    "8": [
+      [
+        436,
+        77,
+        437,
+        77
+      ]
+    ],
+    "9": [
+      [
+        873,
+        154,
+        875,
+        155
+      ]
+    ],
+    "10": [
+      [
+        1746,
+        309,
+        1751,
+        311
+      ]
+    ],
+    "11": [
+      [
+        3493,
+        618,
+        3502,
+        623
+      ]
+    ],
+    "12": [
+      [
+        6987,
+        1236,
+        7004,
+        1247
+      ]
+    ],
+    "13": [
+      [
+        13974,
+        2472,
+        14008,
+        2494
+      ]
+    ]
+  },
+  "byteOrder": "little-endian float32, row-major north→south",
+  "source": "dem_fixed.npy",
+  "sourceCrs": "EPSG:4326",
+  "createdAt": "2026-11-18T12:22:28+00:00",
+  "note_ko": "출처·라이선스는 namwon-geodata 의 sources.json 에 기록. 범위 밖은 fillHeight."
+}
