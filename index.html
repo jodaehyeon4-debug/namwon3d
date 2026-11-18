@@ -7,8 +7,8 @@
   <link rel="icon" href="data:," />
   <script>window.CESIUM_BASE_URL = './cesium/';</script>
   <script src="./config.local.js"></script>
-  <script type="module" crossorigin src="./assets/index-Cv_8p03_.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-BsoYV6XX.css">
+  <script type="module" crossorigin src="./assets/index-B5JokH4Z.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-B__Jkc4n.css">
 </head>
 <body class="band-5-6">
   <div id="map" aria-label="남원 3D 지도"></div>
@@ -17,35 +17,42 @@
   <header id="topbar">
     <div class="brand"><strong>남원 3D 탐험지도</strong><span class="band-chip" title="학년 모드">5~6학년</span></div>
     <div class="search">
-      <input id="search" type="search" placeholder="장소·아파트 단지·학교 이름" autocomplete="off" aria-label="장소 찾기" />
+      <input id="search" type="search" placeholder="학교·아파트·장소 이름으로 찾기" autocomplete="off" aria-label="장소 찾기" />
       <ul id="search-results" role="listbox" hidden></ul>
     </div>
     <div class="actions">
-      <button id="btn-2d" class="tb" aria-pressed="false" title="위에서 본 지도처럼 보기">위에서 보기</button>
-      <button id="btn-where" class="tb" title="내 위치로 가기(위치 허용 필요, 저장하지 않음)">나는 어디?</button>
+      <button id="btn-2d" class="tb" aria-pressed="false" title="위에서 내려다본 지도처럼 보기">위에서 보기</button>
+      <button id="btn-where" class="tb" title="지금 내가 있는 곳으로 가기(위치 허용 필요, 저장하지 않음)">내 위치</button>
       <button id="btn-evidence" class="tb primary" title="지금 화면을 증거로 저장">증거로 저장</button>
-      <button id="btn-present" class="tb" aria-pressed="false" title="교사 발표 보기">발표</button>
+      <button id="btn-present" class="tb" aria-pressed="false" title="선생님 발표용: 글자를 키우고 패널을 접어요">발표</button>
       <button id="btn-sources" class="tb" title="자료 출처">출처</button>
+      <button id="btn-help" class="tb round" title="처음 쓰는 법" aria-label="도움말">?</button>
     </div>
   </header>
 
-  <!-- 왼쪽: 레이어·북마크 -->
+  <!-- 왼쪽: 장소·레이어·도구(한 번에 하나만 펼쳐 지도를 덜 가림) -->
   <aside id="left" class="panel">
-    <section>
-      <h2>장소 바로 가기</h2>
-      <div id="bookmarks" class="chips"></div>
-      <button id="btn-tour" class="small">비행 투어 ▶</button>
-    </section>
-    <section>
-      <h2>지도 레이어</h2>
-      <div id="layers"></div>
-    </section>
-    <section>
-      <h2>탐구 도구</h2>
-      <button id="btn-rain" class="tool" aria-pressed="false">빗방울 떨어뜨리기</button>
-      <button id="btn-place" class="tool" disabled title="1차-B에서 열려요">시설물 놓기 (준비 중)</button>
-      <p id="rain-help" class="hint" hidden>지도에서 아무 곳이나 누르면 빗방울이 땅의 기울기를 따라 흘러가요.</p>
-    </section>
+    <div class="ltabs" role="tablist" aria-label="왼쪽 패널">
+      <button role="tab" data-ltab="places" aria-selected="true">장소</button>
+      <button role="tab" data-ltab="layers" aria-selected="false">레이어</button>
+      <button role="tab" data-ltab="tools" aria-selected="false">도구</button>
+      <button id="left-toggle" class="ltoggle" aria-label="패널 접기" title="패널 접기·펴기">▲</button>
+    </div>
+    <div class="lbody">
+      <section data-lpane="places">
+        <h2>가 보고 싶은 곳을 눌러요</h2>
+        <div id="bookmarks" class="chips"></div>
+        <button id="btn-tour" class="small">▶ 한 바퀴 둘러보기</button>
+      </section>
+      <section data-lpane="layers" hidden>
+        <div id="layers"></div>
+      </section>
+      <section data-lpane="tools" hidden>
+        <button id="btn-rain" class="tool" aria-pressed="false">빗방울 떨어뜨리기<span class="sub">비가 어느 강으로 흘러갈까?</span></button>
+        <p id="rain-help" class="hint" hidden>지도에서 아무 곳이나 누르면 빗방울이 땅의 기울기를 따라 흘러가요.</p>
+        <button id="btn-place" class="tool" disabled title="다음 단계에서 열려요">시설물 놓기<span class="sub">준비 중이에요</span></button>
+      </section>
+    </div>
   </aside>
 
   <!-- 오른쪽: 정보 카드 -->
@@ -57,10 +64,10 @@
   <!-- 아래: 탐구 서랍 -->
   <section id="drawer" class="panel collapsed">
     <div class="drawer-tabs" role="tablist">
-      <button role="tab" data-tab="questions" aria-selected="true">질문 벽</button>
+      <button role="tab" data-tab="questions" aria-selected="false">질문 벽</button>
       <button role="tab" data-tab="lens">개념 렌즈</button>
       <button role="tab" data-tab="evidence">증거 기록장 <span id="ev-count" class="count">0</span></button>
-      <button id="drawer-toggle" class="drawer-toggle" aria-label="서랍 열고 닫기">▲</button>
+      <button id="drawer-toggle" class="drawer-toggle" aria-label="탐구 기록 열고 닫기" title="열기·닫기">▲</button>
     </div>
     <div class="drawer-body">
       <div data-pane="questions"></div>
@@ -72,16 +79,27 @@
   <!-- 미니맵·나침반 -->
   <div id="minimap" class="panel small-panel" aria-label="미니맵"><svg id="minimap-svg"></svg></div>
   <div id="compass" class="panel">
-    <button id="btn-north" title="북쪽을 위로">N</button>
-    <label class="lock"><input id="north-lock" type="checkbox" /> 북쪽 고정</label>
+    <button id="btn-north" title="북쪽을 위로 돌리기" aria-label="북쪽을 위로 돌리기"><span>N</span></button>
+    <label class="lock" title="지도가 돌아가지 않게"><input id="north-lock" type="checkbox" /> 북쪽 고정</label>
   </div>
 
   <!-- 상태 칩 -->
   <div id="chips">
-    <span id="chip-stage" class="chip">① 개괄</span>
+    <span id="chip-stage" class="chip" title="카메라가 땅에서 얼마나 떨어져 있는지">① 전체</span>
     <span id="chip-imagery" class="chip muted">항공사진 꺼짐</span>
   </div>
   <div id="toast" role="status" hidden></div>
+  <!-- 처음 연 학생에게: 무엇부터 할지 세 가지 -->
+  <section id="welcome" class="panel" hidden aria-label="처음 쓰는 법">
+    <h3>남원을 탐험해 볼까요?</h3>
+    <ol>
+      <li><b>가 보기</b> 왼쪽 <em>장소</em>에서 가고 싶은 곳을 눌러요.</li>
+      <li><b>알아보기</b> 건물이나 가게 아이콘을 누르면 정보가 나와요.</li>
+      <li><b>모으기</b> 발견한 것은 <em>증거로 저장</em>을 눌러 모아요.</li>
+    </ol>
+    <p class="hint">움직이기: 끌기 · 크게/작게: 휠(두 손가락 벌리기) · 기울이기: Ctrl+끌기(두 손가락 위아래)</p>
+    <button id="welcome-ok" class="tb primary">시작하기</button>
+  </section>
   <div id="loading"><div class="spinner"></div><p id="loading-text">남원 지도를 펴는 중…</p></div>
   <div id="debug" hidden></div>
   <dialog id="modal"><div id="modal-body"></div><form method="dialog"><button class="close">닫기</button></form></dialog>
