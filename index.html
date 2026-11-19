@@ -7,8 +7,9 @@
   <link rel="icon" href="data:," />
   <script>window.CESIUM_BASE_URL = './cesium/';</script>
   <script src="./config.local.js"></script>
-  <script type="module" crossorigin src="./assets/index-B5JokH4Z.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-B__Jkc4n.css">
+  <script type="module" crossorigin src="./assets/main-mcgGPyhr.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-P2Xu9kJm.js">
+  <link rel="stylesheet" crossorigin href="./assets/main-D-3fBV1T.css">
 </head>
 <body class="band-5-6">
   <div id="map" aria-label="남원 3D 지도"></div>
@@ -21,6 +22,8 @@
       <ul id="search-results" role="listbox" hidden></ul>
     </div>
     <div class="actions">
+      <button id="btn-map" class="tb" aria-pressed="false" title="경계선·도로·이름표·가게 아이콘을 한꺼번에 켜고 끄기">지도 표시</button>
+      <button id="btn-real2" class="tb" title="국토교통부 V-World 3D 실사 지도를 새 탭에서 같은 곳으로 열기(인터넷 필요)">실사 보기</button>
       <button id="btn-2d" class="tb" aria-pressed="false" title="위에서 내려다본 지도처럼 보기">위에서 보기</button>
       <button id="btn-where" class="tb" title="지금 내가 있는 곳으로 가기(위치 허용 필요, 저장하지 않음)">내 위치</button>
       <button id="btn-evidence" class="tb primary" title="지금 화면을 증거로 저장">증거로 저장</button>
@@ -36,6 +39,7 @@
       <button role="tab" data-ltab="places" aria-selected="true">장소</button>
       <button role="tab" data-ltab="layers" aria-selected="false">레이어</button>
       <button role="tab" data-ltab="tools" aria-selected="false">도구</button>
+      <button role="tab" data-ltab="view" aria-selected="false">보기</button>
       <button id="left-toggle" class="ltoggle" aria-label="패널 접기" title="패널 접기·펴기">▲</button>
     </div>
     <div class="lbody">
@@ -46,6 +50,26 @@
       </section>
       <section data-lpane="layers" hidden>
         <div id="layers"></div>
+      </section>
+      <section data-lpane="view" hidden>
+        <label class="vrow"><input type="checkbox" id="v-map"><span>지도 표시<span class="sub">경계선·도로·이름표·가게</span></span></label>
+        <label class="vrow"><input type="checkbox" id="v-usage"><span>쓰임새 색<span class="sub">건물을 쓰임새별 색으로 칠해요</span></span></label>
+        <h2>햇빛과 그림자</h2>
+        <div class="seg" role="group" aria-label="계절">
+          <button data-season="summer">여름</button><button data-season="equinox">봄·가을</button><button data-season="winter">겨울</button>
+        </div>
+        <div class="timerow"><span aria-hidden="true">아침</span><input type="range" id="v-time" min="6" max="19" step="0.25" value="15" aria-label="시각"><span aria-hidden="true">저녁</span></div>
+        <p class="hint"><output id="v-time-out">오후 3:00</output> · <span id="v-sun"></span></p>
+        <h2>산 높이 과장</h2>
+        <div class="seg" role="group" aria-label="높이 과장">
+          <button data-exag="1">1배(실제)</button><button data-exag="1.5">1.5배</button><button data-exag="2">2배</button>
+        </div>
+        <h2>화면 품질</h2>
+        <div class="seg" role="group" aria-label="화면 품질">
+          <button data-tier="high">높음</button><button data-tier="medium">보통</button><button data-tier="light">가벼움</button>
+        </div>
+        <p class="hint" id="v-q-why"></p>
+        <button id="btn-real" class="tool">실사 보기<span class="sub">V-World 3D 지도를 새 탭으로(인터넷 필요)</span></button>
       </section>
       <section data-lpane="tools" hidden>
         <button id="btn-rain" class="tool" aria-pressed="false">빗방울 떨어뜨리기<span class="sub">비가 어느 강으로 흘러갈까?</span></button>
@@ -86,6 +110,7 @@
   <!-- 상태 칩 -->
   <div id="chips">
     <span id="chip-stage" class="chip" title="카메라가 땅에서 얼마나 떨어져 있는지">① 전체</span>
+    <span id="chip-exag" class="chip warn" hidden>높이 1배</span>
     <span id="chip-imagery" class="chip muted">항공사진 꺼짐</span>
   </div>
   <div id="toast" role="status" hidden></div>
