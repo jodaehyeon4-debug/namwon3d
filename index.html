@@ -1,132 +1,31 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>남원 3D 탐험지도</title>
-  <link rel="icon" href="data:," />
-  <script>window.CESIUM_BASE_URL = './cesium/';</script>
-  <script src="./config.local.js"></script>
-  <script type="module" crossorigin src="./assets/main-mcgGPyhr.js"></script>
-  <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-P2Xu9kJm.js">
-  <link rel="stylesheet" crossorigin href="./assets/main-D-3fBV1T.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>남원 3D 탐험지도 — 입체 모형</title>
+<link rel="icon" href="data:,">
+  <script type="module" crossorigin src="./assets/index-DvXmvwyg.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-O_HVTb6y.css">
 </head>
-<body class="band-5-6">
-  <div id="map" aria-label="남원 3D 지도"></div>
-
-  <!-- 위 막대 -->
-  <header id="topbar">
-    <div class="brand"><strong>남원 3D 탐험지도</strong><span class="band-chip" title="학년 모드">5~6학년</span></div>
-    <div class="search">
-      <input id="search" type="search" placeholder="학교·아파트·장소 이름으로 찾기" autocomplete="off" aria-label="장소 찾기" />
-      <ul id="search-results" role="listbox" hidden></ul>
+<body>
+<canvas id="c"></canvas>
+<div id="labels" aria-hidden="true"></div>
+<header class="bar">
+  <div class="brand"><span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 19 L9 8 L13 14 L16 10 L22 19 Z" fill="#fff"/></svg></span><b>남원 3D 탐험지도</b><span class="grade"><i></i>5~6학년 데이터 탐구</span></div>
+  <nav class="chips" id="presets"></nav>
+  <div class="right">
+    <div class="seg" id="quality" role="group" aria-label="품질">
+      <button data-q="high" class="on">높음</button><button data-q="light">가벼움</button>
     </div>
-    <div class="actions">
-      <button id="btn-map" class="tb" aria-pressed="false" title="경계선·도로·이름표·가게 아이콘을 한꺼번에 켜고 끄기">지도 표시</button>
-      <button id="btn-real2" class="tb" title="국토교통부 V-World 3D 실사 지도를 새 탭에서 같은 곳으로 열기(인터넷 필요)">실사 보기</button>
-      <button id="btn-2d" class="tb" aria-pressed="false" title="위에서 내려다본 지도처럼 보기">위에서 보기</button>
-      <button id="btn-where" class="tb" title="지금 내가 있는 곳으로 가기(위치 허용 필요, 저장하지 않음)">내 위치</button>
-      <button id="btn-evidence" class="tb primary" title="지금 화면을 증거로 저장">증거로 저장</button>
-      <button id="btn-present" class="tb" aria-pressed="false" title="선생님 발표용: 글자를 키우고 패널을 접어요">발표</button>
-      <button id="btn-sources" class="tb" title="자료 출처">출처</button>
-      <button id="btn-help" class="tb round" title="처음 쓰는 법" aria-label="도움말">?</button>
-    </div>
-  </header>
-
-  <!-- 왼쪽: 장소·레이어·도구(한 번에 하나만 펼쳐 지도를 덜 가림) -->
-  <aside id="left" class="panel">
-    <div class="ltabs" role="tablist" aria-label="왼쪽 패널">
-      <button role="tab" data-ltab="places" aria-selected="true">장소</button>
-      <button role="tab" data-ltab="layers" aria-selected="false">레이어</button>
-      <button role="tab" data-ltab="tools" aria-selected="false">도구</button>
-      <button role="tab" data-ltab="view" aria-selected="false">보기</button>
-      <button id="left-toggle" class="ltoggle" aria-label="패널 접기" title="패널 접기·펴기">▲</button>
-    </div>
-    <div class="lbody">
-      <section data-lpane="places">
-        <h2>가 보고 싶은 곳을 눌러요</h2>
-        <div id="bookmarks" class="chips"></div>
-        <button id="btn-tour" class="small">▶ 한 바퀴 둘러보기</button>
-      </section>
-      <section data-lpane="layers" hidden>
-        <div id="layers"></div>
-      </section>
-      <section data-lpane="view" hidden>
-        <label class="vrow"><input type="checkbox" id="v-map"><span>지도 표시<span class="sub">경계선·도로·이름표·가게</span></span></label>
-        <label class="vrow"><input type="checkbox" id="v-usage"><span>쓰임새 색<span class="sub">건물을 쓰임새별 색으로 칠해요</span></span></label>
-        <h2>햇빛과 그림자</h2>
-        <div class="seg" role="group" aria-label="계절">
-          <button data-season="summer">여름</button><button data-season="equinox">봄·가을</button><button data-season="winter">겨울</button>
-        </div>
-        <div class="timerow"><span aria-hidden="true">아침</span><input type="range" id="v-time" min="6" max="19" step="0.25" value="15" aria-label="시각"><span aria-hidden="true">저녁</span></div>
-        <p class="hint"><output id="v-time-out">오후 3:00</output> · <span id="v-sun"></span></p>
-        <h2>산 높이 과장</h2>
-        <div class="seg" role="group" aria-label="높이 과장">
-          <button data-exag="1">1배(실제)</button><button data-exag="1.5">1.5배</button><button data-exag="2">2배</button>
-        </div>
-        <h2>화면 품질</h2>
-        <div class="seg" role="group" aria-label="화면 품질">
-          <button data-tier="high">높음</button><button data-tier="medium">보통</button><button data-tier="light">가벼움</button>
-        </div>
-        <p class="hint" id="v-q-why"></p>
-        <button id="btn-real" class="tool">실사 보기<span class="sub">V-World 3D 지도를 새 탭으로(인터넷 필요)</span></button>
-      </section>
-      <section data-lpane="tools" hidden>
-        <button id="btn-rain" class="tool" aria-pressed="false">빗방울 떨어뜨리기<span class="sub">비가 어느 강으로 흘러갈까?</span></button>
-        <p id="rain-help" class="hint" hidden>지도에서 아무 곳이나 누르면 빗방울이 땅의 기울기를 따라 흘러가요.</p>
-        <button id="btn-place" class="tool" disabled title="다음 단계에서 열려요">시설물 놓기<span class="sub">준비 중이에요</span></button>
-      </section>
-    </div>
-  </aside>
-
-  <!-- 오른쪽: 정보 카드 -->
-  <aside id="card" class="panel" hidden aria-live="polite"></aside>
-
-  <!-- 범례 -->
-  <div id="legend" class="panel small-panel"></div>
-
-  <!-- 아래: 탐구 서랍 -->
-  <section id="drawer" class="panel collapsed">
-    <div class="drawer-tabs" role="tablist">
-      <button role="tab" data-tab="questions" aria-selected="false">질문 벽</button>
-      <button role="tab" data-tab="lens">개념 렌즈</button>
-      <button role="tab" data-tab="evidence">증거 기록장 <span id="ev-count" class="count">0</span></button>
-      <button id="drawer-toggle" class="drawer-toggle" aria-label="탐구 기록 열고 닫기" title="열기·닫기">▲</button>
-    </div>
-    <div class="drawer-body">
-      <div data-pane="questions"></div>
-      <div data-pane="lens" hidden></div>
-      <div data-pane="evidence" hidden></div>
-    </div>
-  </section>
-
-  <!-- 미니맵·나침반 -->
-  <div id="minimap" class="panel small-panel" aria-label="미니맵"><svg id="minimap-svg"></svg></div>
-  <div id="compass" class="panel">
-    <button id="btn-north" title="북쪽을 위로 돌리기" aria-label="북쪽을 위로 돌리기"><span>N</span></button>
-    <label class="lock" title="지도가 돌아가지 않게"><input id="north-lock" type="checkbox" /> 북쪽 고정</label>
+    <button id="btn-src" class="ghost">출처</button>
   </div>
-
-  <!-- 상태 칩 -->
-  <div id="chips">
-    <span id="chip-stage" class="chip" title="카메라가 땅에서 얼마나 떨어져 있는지">① 전체</span>
-    <span id="chip-exag" class="chip warn" hidden>높이 1배</span>
-    <span id="chip-imagery" class="chip muted">항공사진 꺼짐</span>
-  </div>
-  <div id="toast" role="status" hidden></div>
-  <!-- 처음 연 학생에게: 무엇부터 할지 세 가지 -->
-  <section id="welcome" class="panel" hidden aria-label="처음 쓰는 법">
-    <h3>남원을 탐험해 볼까요?</h3>
-    <ol>
-      <li><b>가 보기</b> 왼쪽 <em>장소</em>에서 가고 싶은 곳을 눌러요.</li>
-      <li><b>알아보기</b> 건물이나 가게 아이콘을 누르면 정보가 나와요.</li>
-      <li><b>모으기</b> 발견한 것은 <em>증거로 저장</em>을 눌러 모아요.</li>
-    </ol>
-    <p class="hint">움직이기: 끌기 · 크게/작게: 휠(두 손가락 벌리기) · 기울이기: Ctrl+끌기(두 손가락 위아래)</p>
-    <button id="welcome-ok" class="tb primary">시작하기</button>
-  </section>
-  <div id="loading"><div class="spinner"></div><p id="loading-text">남원 지도를 펴는 중…</p></div>
-  <div id="debug" hidden></div>
-  <dialog id="modal"><div id="modal-body"></div><form method="dialog"><button class="close">닫기</button></form></dialog>
+</header>
+<aside id="panel" class="panel" aria-label="레이어"></aside>
+<aside id="card" class="card" hidden></aside>
+<aside id="sources" class="card src-panel" hidden></aside>
+<div class="note">입체 모형 · 건물 바닥·높이·쓰임새는 실제 자료 · 숲·논밭 질감과 창 띠는 표현용</div>
+<div class="stats" id="stats" hidden></div>
+<div class="loading" id="loading">모형을 쌓는 중…</div>
 </body>
 </html>
